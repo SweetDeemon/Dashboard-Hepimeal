@@ -5,11 +5,12 @@ define('LARAVEL_START', microtime(true));
 $defaults = [
     'APP_KEY' => 'base64:sHWjNa6Sqtj7xhGyLnTNDt4snELtZDFDTH9GcDFdMD8=',
     'APP_ENV' => 'production',
-    'APP_DEBUG' => 'true',
+    'APP_DEBUG' => 'false',
     'APP_URL' => 'https://dashboard-hepimeal.vercel.app',
     'SESSION_DRIVER' => 'cookie',
     'CACHE_STORE' => 'array',
     'QUEUE_CONNECTION' => 'sync',
+    'LOG_CHANNEL' => 'stderr',
     'DB_DATABASE' => '/tmp/database.sqlite',
     'APP_CONFIG_CACHE' => '/tmp/config.php',
     'APP_EVENTS_CACHE' => '/tmp/events.php',
@@ -22,6 +23,9 @@ foreach ($defaults as $key => $value) {
     $_ENV[$key] = $value;
 }
 
+@mkdir('/tmp/views', 0777, true);
+@mkdir('/tmp/views/cache', 0777, true);
+
 require __DIR__.'/../vendor/autoload.php';
 
 try {
@@ -32,5 +36,4 @@ try {
     header('Content-Type: text/plain');
     echo "Error: " . $e->getMessage() . "\n";
     echo "File: " . $e->getFile() . ":" . $e->getLine() . "\n";
-    echo "Trace: " . $e->getTraceAsString() . "\n";
 }
