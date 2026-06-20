@@ -23,6 +23,11 @@ Route::post('/logout', [AuthController::class,'logout'])
 |--------------------------------------------------------------------------
 */
 
+Route::get('/debug', function () {
+    phpinfo();
+    exit;
+});
+
 Route::get('/dashboard/kinerja', [DashboardController::class, 'kinerja'])
     ->name('dashboard.kinerja');
 
