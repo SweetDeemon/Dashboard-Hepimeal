@@ -24,7 +24,6 @@ foreach ($defaults as $key => $value) {
 }
 
 @mkdir('/tmp/views', 0777, true);
-@mkdir('/tmp/views/cache', 0777, true);
 
 require __DIR__.'/../vendor/autoload.php';
 
