@@ -2,17 +2,25 @@
 
 define('LARAVEL_START', microtime(true));
 
-if (!file_exists(__DIR__.'/../.env')) {
-    $env = "APP_KEY=".(getenv('APP_KEY') ?: 'base64:sHWjNa6Sqtj7xhGyLnTNDt4snELtZDFDTH9GcDFdMD8=')."\n"
-        ."APP_ENV=".(getenv('APP_ENV') ?: 'production')."\n"
-        ."APP_DEBUG=".(getenv('APP_DEBUG') ?: 'false')."\n"
-        ."APP_URL=".(getenv('APP_URL') ?: 'https://dashboard-hepimeal.vercel.app')."\n"
-        ."SESSION_DRIVER=cookie\n"
-        ."CACHE_STORE=array\n"
-        ."QUEUE_CONNECTION=sync\n"
-        ."DB_CONNECTION=".(getenv('DB_CONNECTION') ?: 'sqlite')."\n"
-        ."DB_DATABASE=/tmp/database.sqlite\n";
-    file_put_contents(__DIR__.'/../.env', $env);
+$defaults = [
+    'APP_KEY' => 'base64:sHWjNa6Sqtj7xhGyLnTNDt4snELtZDFDTH9GcDFdMD8=',
+    'APP_ENV' => 'production',
+    'APP_DEBUG' => 'true',
+    'APP_URL' => 'https://dashboard-hepimeal.vercel.app',
+    'SESSION_DRIVER' => 'cookie',
+    'CACHE_STORE' => 'array',
+    'QUEUE_CONNECTION' => 'sync',
+    'DB_CONNECTION' => 'sqlite',
+    'DB_DATABASE' => '/tmp/database.sqlite',
+    'APP_CONFIG_CACHE' => '/tmp/config.php',
+    'APP_EVENTS_CACHE' => '/tmp/events.php',
+    'APP_ROUTES_CACHE' => '/tmp/routes.php',
+    'VIEW_COMPILED_PATH' => '/tmp/views',
+];
+
+foreach ($defaults as $key => $value) {
+    putenv("$key=$value");
+    $_ENV[$key] = $value;
 }
 
 require __DIR__.'/../vendor/autoload.php';
