@@ -12,10 +12,6 @@ $defaults = [
     'QUEUE_CONNECTION' => 'sync',
     'LOG_CHANNEL' => 'stderr',
     'DB_DATABASE' => '/tmp/database.sqlite',
-    'APP_CONFIG_CACHE' => '/tmp/config.php',
-    'APP_EVENTS_CACHE' => '/tmp/events.php',
-    'APP_ROUTES_CACHE' => '/tmp/routes.php',
-    'VIEW_COMPILED_PATH' => '/tmp/views',
 ];
 
 foreach ($defaults as $key => $value) {
@@ -27,12 +23,14 @@ foreach ($defaults as $key => $value) {
 
 require __DIR__.'/../vendor/autoload.php';
 
-try {
-    $app = require_once __DIR__.'/../bootstrap/app.php';
-    $app->handleRequest(Illuminate\Http\Request::capture());
-} catch (Throwable $e) {
-    http_response_code(500);
-    header('Content-Type: text/plain');
-    echo "Error: " . $e->getMessage() . "\n";
-    echo "File: " . $e->getFile() . ":" . $e->getLine() . "\n";
-}
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+
+$response->send();
+
+$kernel->terminate($request, $response);
