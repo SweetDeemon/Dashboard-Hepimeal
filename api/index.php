@@ -12,6 +12,7 @@ $defaults = [
     'QUEUE_CONNECTION' => 'sync',
     'LOG_CHANNEL' => 'stderr',
     'DB_DATABASE' => '/tmp/database.sqlite',
+    'VIEW_COMPILED_PATH' => '/tmp/views',
 ];
 
 foreach ($defaults as $key => $value) {
