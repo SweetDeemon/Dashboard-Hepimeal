@@ -1,13 +1,12 @@
 <?php
 
-$app = require __DIR__ . '/../bootstrap/app.php';
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 
-$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+define('LARAVEL_START', microtime(true));
 
-$request = Illuminate\Http\Request::capture();
+require __DIR__.'/../vendor/autoload.php';
 
-$response = $kernel->handle($request);
+$app = require_once __DIR__.'/../bootstrap/app.php';
 
-$response->send();
-
-$kernel->terminate($request, $response);
+$app->handleRequest(Request::capture());
