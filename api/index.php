@@ -22,18 +22,12 @@ foreach ($defaults as $key => $value) {
 
 @mkdir('/tmp/views', 0777, true);
 
-error_log('=== DIAGNOSTICS START ===');
-error_log('services.php exists: ' . (file_exists(__DIR__.'/../bootstrap/cache/services.php') ? 'yes' : 'no'));
-error_log('packages.php exists: ' . (file_exists(__DIR__.'/../bootstrap/cache/packages.php') ? 'yes' : 'no'));
-error_log('config dir: ' . __DIR__ . '/../config');
-$configFiles = glob(__DIR__ . '/../config/*.php');
-error_log('config files: ' . (is_array($configFiles) ? implode(', ', $configFiles) : 'none'));
-error_log('bootstrapPath: ' . realpath(__DIR__ . '/../bootstrap'));
-error_log('=== DIAGNOSTICS END ===');
-
 require __DIR__.'/../vendor/autoload.php';
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
+
+// Ponytail: directly register ViewServiceProvider in case services manifest doesn't work
+$app->register(\Illuminate\View\ViewServiceProvider::class);
 
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
@@ -49,7 +43,12 @@ try {
     echo "Error: " . $e->getMessage() . "\n\n";
     echo "File: " . $e->getFile() . ":" . $e->getLine() . "\n\n";
     echo "Trace:\n" . $e->getTraceAsString() . "\n\n";
-    echo "Previous: " . ($e->getPrevious() ? $e->getPrevious()->getMessage() : 'none') . "\n";
-    echo "\n\nPrevious trace:\n" . ($e->getPrevious() ? $e->getPrevious()->getTraceAsString() : 'none') . "\n";
+    $prev = $e->getPrevious();
+    while ($prev) {
+        echo "\nPrevious: " . $prev->getMessage() . "\n";
+        echo "File: " . $prev->getFile() . ":" . $prev->getLine() . "\n";
+        echo $prev->getTraceAsString() . "\n";
+        $prev = $prev->getPrevious();
+    }
     exit(1);
 }
