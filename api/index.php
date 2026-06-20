@@ -5,7 +5,7 @@ define('LARAVEL_START', microtime(true));
 $defaults = [
     'APP_KEY' => 'base64:sHWjNa6Sqtj7xhGyLnTNDt4snELtZDFDTH9GcDFdMD8=',
     'APP_ENV' => 'production',
-    'APP_DEBUG' => 'true', // ponytail: keep true for now, set false after working
+    'APP_DEBUG' => 'false',
     'APP_URL' => 'https://dashboard-hepimeal.vercel.app',
     'SESSION_DRIVER' => 'cookie',
     'CACHE_STORE' => 'array',
@@ -28,18 +28,8 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
-try {
-    $response = $kernel->handle(
-        $request = Illuminate\Http\Request::capture()
-    );
-    $response->send();
-    $kernel->terminate($request, $response);
-} catch (\Throwable $e) {
-    http_response_code(500);
-    header('Content-Type: text/plain');
-    echo "Error: " . $e->getMessage() . "\n\n";
-    echo "File: " . $e->getFile() . ":" . $e->getLine() . "\n\n";
-    echo $e->getTraceAsString() . "\n\n";
-    echo "Previous: " . ($e->getPrevious() ? $e->getPrevious()->getMessage() : 'none') . "\n";
-    exit(1);
-}
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+$response->send();
+$kernel->terminate($request, $response);
